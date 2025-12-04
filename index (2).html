@@ -9,10 +9,10 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
         .schedule-table th, .schedule-table td {
-            padding: 8px 12px;
+            padding: 6px 8px; /* Reduced padding */
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
-            font-size: 0.75rem;
+            font-size: 0.7rem; /* Reduced font size for compactness */
             vertical-align: top;
         }
         .schedule-table th {
@@ -32,10 +32,10 @@
             color: #1f2937;
         }
         .gantt-bar {
-            height: 18px;
-            border-radius: 4px;
+            height: 16px; /* Slightly reduced bar height */
+            border-radius: 3px;
             position: relative;
-            margin: 2px 0;
+            margin: 1px 0;
         }
         /* Custom Colors */
         .color-green { background-color: #10b981; } /* Primary Green for Chapters */
@@ -44,22 +44,23 @@
         .color-purple { background-color: #a855f7; } /* Purple for Testing/Finalization */
     </style>
 </head>
-<body class="p-4 sm:p-8">
+<body class="p-2 sm:p-4">
 
-    <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-xl overflow-x-auto">
+    <div class="max-w-full mx-auto bg-white rounded-lg shadow-xl overflow-x-auto">
         
-        <header class="bg-gray-800 p-4">
-            <h1 class="text-xl font-bold text-white text-center">
-                Barangay eBlotter System: Capstone Development Schedule (Q4 2025 - Q1 2026)
+        <header class="bg-gray-800 p-3">
+            <h1 class="text-lg font-bold text-white text-center">
+                Barangay eBlotter System: Capstone Development Schedule (Sept 2025 - Mar 2026)
             </h1>
         </header>
 
         <table class="schedule-table w-full">
             <colgroup>
-                <col style="width: 25%;"> 
+                <!-- Optimized widths for better fit -->
+                <col style="width: 28%;"> 
                 <col style="width: 10%;"> 
-                <col style="width: 15%;"> 
-                <col style="width: 50%;"> 
+                <col style="width: 10%;"> 
+                <col style="width: 52%;"> 
             </colgroup>
             <thead>
                 <tr>
