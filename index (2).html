@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitClinic - Full PHP/SQL Stack</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for a cleaner look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f9;
+        }
+        .php-block {
+            background-color: #272822; /* Monokai-like dark background */
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
+
+        <div class="w-full max-w-4xl">
+            <h1 class="text-4xl font-extrabold text-green-700 mb-8 text-center">
+                VitClinic Patient Management System (PHP & SQL)
+            </h1>
+            <p class="text-gray-600 mb-6 text-center">
+                This block displays the complete set of files required for the CRUD (Create, Read, Update, Delete) application.
+            </p>
+            
+            <!-- 1. Database Creation (MySQL) -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">1️⃣ Database Creation (MySQL)</h2>
+            <pre class="php-block">
+CREATE DATABASE vitclinic;
+
+USE vitclinic;
+
+CREATE TABLE `patients` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `species` VARCHAR(50) NOT NULL,
+  `breed` VARCHAR(50) NOT NULL,
+  `owner` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+            </pre>
+
+            <!-- 2. config.php (Database Connection) -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">2️⃣ config.php (Database Connection)</h2>
+            <pre class="php-block">
+&lt;?php
+$host = "localhost";
+$user = "root";
+$pass = ""; // Change this password if needed
+$db   = "vitclinic";
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?&gt;
+            </pre>
+
+            <!-- 3. index.php (View & List Patients) -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">3️⃣ index.php (View & List Patients)</h2>
+            <pre class="php-block">
+&lt;?php
+include 'config.php';
+$result = $conn-&gt;query("SELECT * FROM patients ORDER BY id DESC");
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;VitClinic - Patients&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f2f2f2; }
+        a { text-decoration: none; color: blue; }
+        a:hover { text-decoration: underline; }
+        .btn { padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;VitClinic - Patients&lt;/h2&gt;
+    &lt;a href="add.php" class="btn"&gt;Add New Patient&lt;/a&gt;
+    &lt;table&gt;
+        &lt;tr&gt;
+            &lt;th&gt;ID&lt;/th&gt;
+            &lt;th&gt;Name&lt;/th&gt;
+            &lt;th&gt;Species&lt;/th&gt;
+            &lt;th&gt;Breed&lt;/th&gt;
+            &lt;th&gt;Owner&lt;/th&gt;
+            &lt;th&gt;Actions&lt;/th&gt;
+        &lt;/tr&gt;
+        &lt;?php while($row = $result-&gt;fetch_assoc()): ?&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;?= $row['id'] ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?= $row['name'] ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?= $row['species'] ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?= $row['breed'] ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?= $row['owner'] ?&gt;&lt;/td&gt;
+            &lt;td&gt;
+                &lt;a href="edit.php?id=&lt;?= $row['id'] ?&gt;"&gt;Edit&lt;/a&gt; | 
+                &lt;a href="delete.php?id=&lt;?= $row['id'] ?&gt;" onclick="return confirm('Delete this patient?')"&gt;Delete&lt;/a&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;?php endwhile; ?&gt;
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </pre>
+
+            <!-- 4. add.php (Add Patient) -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">4️⃣ add.php (Add Patient)</h2>
+            <pre class="php-block">
+&lt;?php
+include 'config.php';
+
+if(isset($_POST['submit'])){
+    // NOTE: In a real app, use prepared statements to prevent SQL injection!
+    $name = $_POST['name'];
+    $species = $_POST['species'];
+    $breed = $_POST['breed'];
+    $owner = $_POST['owner'];
+
+    $conn-&gt;query("INSERT INTO patients (name,species,breed,owner) VALUES('$name','$species','$breed','$owner')");
+    header("Location: index.php");
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Add Patient&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Add New Patient&lt;/h2&gt;
+    &lt;form method="POST"&gt;
+        Name: &lt;input type="text" name="name" required&gt;&lt;br&gt;&lt;br&gt;
+        Species: &lt;input type="text" name="species" required&gt;&lt;br&gt;&lt;br&gt;
+        Breed: &lt;input type="text" name="breed" required&gt;&lt;br&gt;&lt;br&gt;
+        Owner: &lt;input type="text" name="owner" required&gt;&lt;br&gt;&lt;br&gt;
+        &lt;input type="submit" name="submit" value="Add Patient"&gt;
+    &lt;/form&gt;
+    &lt;br&gt;
+    &lt;a href="index.php"&gt;Back&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </pre>
+
+            <!-- 5. edit.php (Edit Patient) -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">5️⃣ edit.php (Edit Patient)</h2>
+            <pre class="php-block">
+&lt;?php
+include 'config.php';
+
+$id = $_GET['id'];
+$result = $conn-&gt;query("SELECT * FROM patients WHERE id=$id");
+$row = $result-&gt;fetch_assoc();
+
+if(isset($_POST['submit'])){
+    // NOTE: In a real app, use prepared statements to prevent SQL injection!
+    $name = $_POST['name'];
+    $species = $_POST['species'];
+    $breed = $_POST['breed'];
+    $owner = $_POST['owner'];
+
+    $conn-&gt;query("UPDATE patients SET name='$name', species='$species', breed='$breed', owner='$owner' WHERE id=$id");
+    header("Location: index.php");
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Edit Patient&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Edit Patient&lt;/h2&gt;
+    &lt;form method="POST"&gt;
+        Name: &lt;input type="text" name="name" value="&lt;?= $row['name'] ?&gt;" required&gt;&lt;br&gt;&lt;br&gt;
+        Species: &lt;input type="text" name="species" value="&lt;?= $row['species'] ?&gt;" required&gt;&lt;br&gt;&lt;br&gt;
+        Breed: &lt;input type="text" name="breed" value="&lt;?= $row['breed'] ?&gt;" required&gt;&lt;br&gt;&lt;br&gt;
+        Owner: &lt;input type="text" name="owner" value="&lt;?= $row['owner'] ?&gt;" required&gt;&lt;br&gt;&lt;br&gt;
+        &lt;input type="submit" name="submit" value="Update Patient"&gt;
+    &lt;/form&gt;
+    &lt;br&gt;
+    &lt;a href="index.php"&gt;Back&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </pre>
+
+            <!-- 6. delete.php (Delete Patient) -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">6️⃣ delete.php (Delete Patient)</h2>
+            <pre class="php-block">
+&lt;?php
+include 'config.php';
+
+$id = $_GET['id'];
+$conn-&gt;query("DELETE FROM patients WHERE id=$id");
+header("Location: index.php");
+
+// NOTE: This file should have error handling and validation in a production environment.
+?&gt;
+            </pre>
+
+            <p class="text-sm text-gray-500 mt-8 text-center">
+                *This HTML page is for demonstration. The PHP and SQL code blocks above are displayed as static text and require a running web server (like Apache) and MySQL database to function.*
+            </p>
+        </div>
+    </div>
+</body>
+</html>
